@@ -37,7 +37,8 @@
           <a mat-button routerLink="/kanban">🍱 Kanban Demo</a>
           <a mat-button routerLink="/customers">⚡ SSR Demo</a>
   
-          <a mat-button routerLink="/login">🔑 Login</a>
+          <a *ngIf="!userIsAuthenticated" mat-button routerLink="/login">🔑 Login</a>
+          <a *ngIf="userIsAuthenticated" mat-button routerLink="/login">🔑 Logout</a>
   
         </div>
   
