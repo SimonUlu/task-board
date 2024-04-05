@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "angular-kanban-7f690": {
+      "hosting": {
+        "task-board": [
+          "angular-kanban-7f690"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "angular-kanban-7f690"
+  }
+}

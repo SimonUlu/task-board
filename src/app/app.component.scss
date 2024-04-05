@@ -1,0 +1,20 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    mat-card {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .google-logo {
+      width: 20px;
+      margin-right: 10px;
+    }
+    .logout-section {
+      margin-top: 20px;
+    }
+  }

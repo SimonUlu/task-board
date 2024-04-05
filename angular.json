@@ -94,11 +94,40 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "version": 2
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "task-board:build:production",
+              "serveTarget": "task-board:serve:production"
+            },
+            "development": {
+              "buildTarget": "task-board:build:development",
+              "serveTarget": "task-board:serve:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
   },
   "cli": {
-    "analytics": "fbdc8902-0d10-4d11-8f3c-8400e290690c"
+    "analytics": "fbdc8902-0d10-4d11-8f3c-8400e290690c",
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }
