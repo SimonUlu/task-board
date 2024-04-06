@@ -1,0 +1,26 @@
+<mat-card class="outer-card">
+    <mat-card-header>
+      <!-- Slot for the handle -->
+      <ng-content></ng-content>
+      <mat-card-title>
+        {{ board.title }}
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{ board.id }}
+      </mat-card-subtitle>
+    </mat-card-header>
+  
+    <div
+      class="tasks"
+      cdkDropList
+      cdkDropListOrientation="vertical"
+    >
+      <div
+        class="inner-card"
+        cdkDrag
+        *ngFor="let task of board.tasks | keyvalue"
+      >
+        <mat-card *ngIf="task.key == 'description'"> {{ task.value}} </mat-card>
+      </div>
+    </div>
+  </mat-card>

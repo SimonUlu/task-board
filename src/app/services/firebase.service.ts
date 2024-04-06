@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, getDocs } from '@angular/fire/firestore';
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailAndPassword, User } from "firebase/auth";
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -12,7 +12,7 @@ export class FirebaseService {
     public afs: Firestore,
   ) {}
 
-
+    // common method to explain how to retrieve collections
   async getCollection() {
     const testCollectionRef = collection(this.afs, 'test');
     const snapshot = await getDocs(testCollectionRef);
@@ -93,6 +93,20 @@ export class FirebaseService {
 
       return () => unsubscribe();
     })
+  }
+
+  async getCurrentUser(): Promise<User> {
+    const auth = getAuth();
+
+    return new Promise((resolve, reject) => {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          resolve(user);
+        } else {
+          reject('Kein Benutzer angemeldet.');
+        }
+      });
+    });
   }
 
 
