@@ -5,6 +5,8 @@ import { ShellComponent } from '../../shared/shell/shell.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SharedModule } from '../../shared/shared.module';
 import { Task } from '../task.model';
+import { MatDialog } from '@angular/material/dialog';
+import { TaskDialogComponent } from '../dialogs/task-dialog.component';
 
 @Component({
   selector: 'app-board',
@@ -17,6 +19,16 @@ export class BoardComponent {
 
   @Input() board!: Board;
 
-  constructor(private firebaseService: FirebaseCrudServiceService) {}
+  constructor(private firebaseService: FirebaseCrudServiceService, public matDialog: MatDialog) {}
+
+  openDialog(task?: any, idx?: number) {
+    const newTask = {label: 'purple'};
+    const dialogRef = this.matDialog.open(TaskDialogComponent,  {
+      width: "500px", 
+      data: task
+      ? {task: {...task}, isNew: false, boardId: this.board.id, idx}
+      : {task: newTask, isNew: true}
+    })
+  }
 
 }

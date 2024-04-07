@@ -1,26 +1,32 @@
-<mat-card class="outer-card">
-    <mat-card-header>
-      <!-- Slot for the handle -->
-      <ng-content></ng-content>
-      <mat-card-title>
-        {{ board.title }}
-      </mat-card-title>
-      <mat-card-subtitle>
-        {{ board.id }}
-      </mat-card-subtitle>
-    </mat-card-header>
-  
+<mat-card class="bg-white shadow-md rounded-lg overflow-hidden">
+  <mat-card-header class="flex flex-col justify-between p-6 bg-gray-100">
+    <!-- Slot for the handle -->
+    <ng-content></ng-content>
+    <mat-card-title class="text-xl font-semibold text-gray-900">
+      {{ board.title }}
+    </mat-card-title>
+    <mat-card-subtitle class="text-sm font-medium text-gray-600">
+      {{ board.id }}
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <div
+    class="tasks p-4"
+    cdkDropList
+    cdkDropListOrientation="vertical"
+  >
     <div
-      class="tasks"
-      cdkDropList
-      cdkDropListOrientation="vertical"
+      class="inner-card"
+      cdkDrag
+      *ngFor="let task of board.tasks | keyvalue; let i = index"
+      (click)="openDialog(task, i)"
     >
-      <div
-        class="inner-card"
-        cdkDrag
-        *ngFor="let task of board.tasks | keyvalue"
-      >
-        <mat-card *ngIf="task.key == 'description'"> {{ task.value}} </mat-card>
-      </div>
+      <mat-card *ngIf="task.key == 'description'" class="p-4 mb-4 bg-gray-50 border border-gray-200 rounded-lg shadow-sm"> 
+        {{ task.value }} 
+      </mat-card>
     </div>
-  </mat-card>
+  </div>
+  <button mat-stroked-button (click)="openDialog()">
+    <mat-icon>add</mat-icon>
+</button>
+</mat-card>
