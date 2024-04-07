@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, getDocs, addDoc, query, where, deleteDoc, doc } from '@angular/fire/firestore';
 import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import { Observable } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
+import { map, catchError, switchMap } from 'rxjs';
 import { Board } from '../kanban/board.model';
 import { FirebaseService } from './firebase.service';
 
@@ -31,24 +32,33 @@ export class FirebaseCrudServiceService {
   }
 
 
-  async getUserBoards(): Promise<Board[]> {
-    try {
-      const user = await this.firebaseService.getCurrentUser(); 
-      const boardCollection = collection(this.afs, "boards"); 
-      const q = query(boardCollection, where("uid", "==", user.uid));
-      console.log(user.uid);
-      const boardSnapshot = await getDocs(q); 
-      console.log(boardSnapshot);
-      const boards = boardSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }) as Board);
-      console.log(boards);
-      return boards; 
-    } catch (error) {
-      console.log(error); 
-      return []; 
-    }
+  getUserBoards(): Observable<Board[]> {
+    return from(this.firebaseService.getCurrentUser()).pipe(
+      switchMap(user => {
+        if (!user) {
+          // Wenn kein Benutzer gefunden wurde, geben Sie ein leeres Array zurück.
+          // Dies verhindert, dass der folgende Code ausgeführt wird und Fehler verursacht.
+          return of([]);
+        }
+        
+        const boardCollection = collection(this.afs, "boards");
+        const q = query(boardCollection, where("uid", "==", user.uid));
+        
+        // Da getDocs ein Promise zurückgibt, verwenden wir from() um es in ein Observable umzuwandeln.
+        return from(getDocs(q)).pipe(
+          map(boardSnapshot => 
+            boardSnapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data()
+            }) as Board)
+          )
+        );
+      }),
+      catchError(error => {
+        console.log(error);
+        return of([]); // Verwenden Sie of([]) um ein leeres Array als Observable zurückzugeben.
+      })
+    );
   }
 
   async deleteBoard(boardId: string) {
